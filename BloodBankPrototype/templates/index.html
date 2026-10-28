@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BloodLink | Blood Bank Distribution</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand-mark">B+</div>
+  <div><h1>BloodLink</h1><p>Blood Bank Distribution & Hospital Matching System</p></div>
+  <span class="demo-tag">ACADEMIC PROTOTYPE</span>
+</header>
+
+<main class="page">
+  <section class="hero">
+    <div>
+      <p class="eyebrow">SMART ALLOCATION • SHORTEST ROUTE</p>
+      <h2>Get the right units<br><span>to the right hospital.</span></h2>
+      <p class="hero-copy">A demonstration system that tracks blood inventory, prioritises hospital requests and calculates shortest delivery routes.</p>
+    </div>
+    <div class="hero-art" aria-hidden="true"><div class="cross">+</div><div class="route-line"></div><div class="route-dot dot-one"></div><div class="route-dot dot-two"></div></div>
+  </section>
+
+  <section class="stats">
+    <article class="stat"><span>Total units in stock</span><strong id="totalUnits">—</strong><small>Across all blood groups</small></article>
+    <article class="stat"><span>Pending requests</span><strong id="pendingCount">—</strong><small>Awaiting allocation</small></article>
+    <article class="stat"><span>Low-stock groups</span><strong id="lowStock">—</strong><small>At or below minimum stock</small></article>
+  </section>
+
+  <section class="content-grid">
+    <article class="panel">
+      <div class="panel-heading"><div><p class="eyebrow">LIVE STOCK</p><h3>Blood inventory</h3></div><span class="pill">SQLite</span></div>
+      <div id="inventory" class="inventory-grid"></div>
+      <form id="inventoryForm" class="form-row">
+        <label>Blood group<select id="invGroup"></select></label>
+        <label>Set units<input id="invUnits" type="number" min="0" required placeholder="e.g. 12"></label>
+        <button class="button button-dark" type="submit">Update stock</button>
+      </form>
+    </article>
+
+    <article class="panel">
+      <div class="panel-heading"><div><p class="eyebrow">NEW HOSPITAL NEED</p><h3>Create a request</h3></div><span class="pill">Greedy priority</span></div>
+      <form id="requestForm" class="request-form">
+        <label>Hospital<select id="hospital" required></select></label>
+        <div class="form-row two">
+          <label>Blood group<select id="reqGroup" required></select></label>
+          <label>Units needed<input id="reqUnits" type="number" min="1" value="2" required></label>
+        </div>
+        <label>Urgency<select id="urgency"><option>Critical</option><option>High</option><option selected>Normal</option></select></label>
+        <button class="button button-primary" type="submit">＋ Add request</button>
+      </form>
+      <div class="algorithm-note"><strong>Allocation logic</strong><p>Requests are reviewed by urgency. This demo allocates only the exact blood group requested and checks available units.</p></div>
+    </article>
+  </section>
+
+  <section class="panel requests-panel">
+    <div class="panel-heading"><div><p class="eyebrow">REQUEST QUEUE</p><h3>Hospital requests</h3></div><button id="resetButton" class="button button-light" type="button">Reset demo</button></div>
+    <div class="table-wrap"><table><thead><tr><th>ID</th><th>Hospital</th><th>Group</th><th>Units</th><th>Urgency</th><th>Status</th><th>Action</th></tr></thead><tbody id="requestsBody"></tbody></table></div>
+    <p id="emptyRequests" class="empty-state">No requests yet. Add a hospital request to begin.</p>
+  </section>
+
+  <section class="content-grid bottom-grid">
+    <article class="panel route-panel">
+      <div class="panel-heading"><div><p class="eyebrow">DELIVERY PLANNER</p><h3>Dijkstra route finder</h3></div><span class="pill">Graph algorithm</span></div>
+      <label>Destination hospital<select id="routeHospital"></select></label>
+      <button id="routeButton" class="button button-primary" type="button">Find shortest route</button>
+      <div id="routeResult" class="route-result"><span class="route-icon">↗</span><p>Choose a destination to calculate the shortest route from the Central Blood Bank.</p></div>
+    </article>
+    <article class="panel">
+      <div class="panel-heading"><div><p class="eyebrow">DAA CONCEPTS</p><h3>Algorithms used</h3></div></div>
+      <div class="concept"><span>01</span><div><strong>Greedy allocation</strong><p>Processes higher-urgency requests first as a decision-support demonstration.</p></div></div>
+      <div class="concept"><span>02</span><div><strong>Dijkstra’s algorithm</strong><p>Finds the minimum-distance path in the sample road graph.</p></div></div>
+      <div class="concept"><span>03</span><div><strong>Hash / database lookup</strong><p>Looks up stock by blood group and persists records in SQLite.</p></div></div>
+      <p class="complexity">Dijkstra with a priority queue: approximately <b>O((V + E) log V)</b>.</p>
+    </article>
+  </section>
+  <footer>BloodLink prototype · Sample data and illustrative distances only · Not for real-world medical allocation.</footer>
+</main>
+<div id="toast" class="toast" role="status"></div>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
